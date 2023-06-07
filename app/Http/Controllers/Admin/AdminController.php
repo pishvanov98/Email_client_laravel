@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function index(){
-        return 2;
+        return view('admin.index');
     }
+
+    public function create(){
+        return view('admin.add_view');
+    }
+
+    public function store(Request $request){
+        dd($request->all());
+    }
+
 }
