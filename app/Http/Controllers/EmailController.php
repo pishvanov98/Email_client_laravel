@@ -47,7 +47,28 @@ class EmailController extends Controller
     }
 
     public function sendEmail(){
-     //  $email= Email_queue::all()->where('status', '=', '0');
+       $emails_mass= Email_queue::all()->where('status', '=', '0')->toArray();
+
+
+       foreach ($emails_mass as $email_mass){
+           $email='';
+           $pattern='';
+           $name='';
+           $product=[];
+           $email=$email_mass['email'];
+           $pattern=$email_mass['pattern'];
+           $email_mass['data']=json_decode($email_mass['data'],true);
+           foreach ($email_mass['data'] as $key=>$data){
+               if($key == 'name'){
+                   $name=$data;
+               }else{
+                   $product[]=$data;
+               }
+           }
+           //тут отправляем почту подставив переменные в шаблон
+       }
+exit();
+
         $name= 'Никсон';//переменная из очереди писем таблицы
         $view= View::all()->where('name','=','default')->toArray();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
         $content = str_replace("|Name|",$name, $view[0]['data']);
