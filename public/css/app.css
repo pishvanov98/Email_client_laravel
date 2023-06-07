@@ -11982,3 +11982,7 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.flex_wrapper_admin {
+  display: flex;
+  justify-content: end;
+}

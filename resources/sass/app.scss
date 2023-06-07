@@ -6,3 +6,8 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.flex_wrapper_admin{
+    display: flex;
+    justify-content: end;
+}

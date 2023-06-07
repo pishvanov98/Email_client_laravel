@@ -10,8 +10,7 @@
         </div>
         <div class="mb-3">
         <select name="exampleInputNameStatus" class="form-select" aria-label="Default select example">
-            <option selected>Статус</option>
-            <option value="1">Активный</option>
+            <option selected value="1">Активный</option>
             <option value="2">Не активный</option>
         </select>
         </div>

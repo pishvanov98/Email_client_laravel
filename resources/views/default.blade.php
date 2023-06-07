@@ -7,13 +7,15 @@
 
 <body>
 <header>
-    11
+шапка
 </header>
 
-{!! $emailBody !!}
+
+
+{!! $content !!}
 
 <footer>
-    22
+  футер
 </footer>
 </body>
 
