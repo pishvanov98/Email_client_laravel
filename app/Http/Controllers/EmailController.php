@@ -25,7 +25,7 @@ class EmailController extends Controller
         $data=[
           'token'=>md5('Avel'),
           'email'=>'nikita@aveldent.ru',
-          'pattern'=>'product_subscription',
+          'pattern'=>'default',
           'data'=>[
               'name'=>'Никита',
               'product'=>[
@@ -47,9 +47,9 @@ class EmailController extends Controller
 
     public function sendEmail(){
      //  $email= Email_queue::all()->where('status', '=', '0');
-      Mail::send(['text'=>'product_subscription'],['name'=>'web dev'],function ($message){
-          $message->to('nikita@aveldent.ru','to dev block')->subject('test mail');
-          $message->from('nikita@aveldent.ru','to dev block')->subject('test mail');
+      Mail::send('default',['emailBody'=>'<h1>TESTING</h1>'],function ($message){
+          $message->to('nikita@aveldent.ru','to dev block')->subject('test mail');//кому
+          $message->from('nikita@aveldent.ru','to dev block22')->subject('test mail');//от
       });
     }
 }
