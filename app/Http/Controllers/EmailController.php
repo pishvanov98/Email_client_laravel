@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessEmailSend;
 use App\Models\Email_queue;
 use App\Models\View;
 use Illuminate\Http\Request;
@@ -9,18 +10,18 @@ use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
 {
-    public function set(Request $request){
+    public function getValEmail($request){
         $data_request=$request->all();
+        $email_mass=[];
         if(!empty($data_request['data'])){
             $data=json_decode($data_request['data'],true);
                 if($data['token'] == 'f2354a65cc810f0a73a0160a3e25628a' && !empty($data['email']) && !empty($data['data']) && !empty($data['pattern'])){
-                        $email= new Email_queue();
-                        $email->email=$data['email'];
-                        $email->data=json_encode($data['data'],true);
-                        $email->pattern=$data['pattern'];
-                        $email->save();
+                    $email_mass['email']=$data['email'];
+                    $email_mass['data']=$data['data'];
+                    $email_mass['pattern']=$data['pattern'];
                 }
         }
+        return $email_mass;
     }
     public function test(){
         $data=[
@@ -43,39 +44,21 @@ class EmailController extends Controller
                       'discount_price'=>'1000']
               ]
         ]];
-       return redirect('/set?data='.json_encode($data,true));
+       return redirect('/send?data='.json_encode($data,true));
     }
 
-    public function sendEmail(){
-       $emails_mass= Email_queue::all()->where('status', '=', '0')->toArray();
-
-
-       foreach ($emails_mass as $email_mass){
-           $email='';
-           $pattern='';
-           $name='';
-           $product=[];
-           $email=$email_mass['email'];
-           $pattern=$email_mass['pattern'];
-           $email_mass['data']=json_decode($email_mass['data'],true);
-           foreach ($email_mass['data'] as $key=>$data){
-               if($key == 'name'){
-                   $name=$data;
-               }else{
-                   $product[]=$data;
-               }
-           }
-           //тут отправляем почту подставив переменные в шаблон
-       }
-exit();
-
+    public function sendEmail(Request $request){
+       $data= $this->getValEmail($request);
+var_dump($data);
+        exit();
         $name= 'Никсон';//переменная из очереди писем таблицы
         $view= View::all()->where('name','=','default')->toArray();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
         $content = str_replace("|Name|",$name, $view[0]['data']);
-      Mail::send('default',['content'=>$content],function ($message){
-          $message->to('nikita@aveldent.ru','to dev block')->subject('test mail');//кому
-          $message->from('nikita@aveldent.ru','to dev block22')->subject('test mail');//от
-      });
+
+        $this->dispatch(new ProcessEmailSend($content));
+
     }
+
+
 
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EmailQueueTable extends Migration
+class CreateHrefHeshTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class EmailQueueTable extends Migration
      */
     public function up()
     {
-        Schema::create('email_queue', function (Blueprint $table) {
+        Schema::create('href_hesh', function (Blueprint $table) {
             $table->id();
-            $table->string('email');
-            $table->string('pattern');
+            $table->string('href');
             $table->string('hash');
-            $table->string('status');
-            $table->string('transitions_count');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class EmailQueueTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('email_queue');
+        Schema::dropIfExists('href_hesh');
     }
 }
