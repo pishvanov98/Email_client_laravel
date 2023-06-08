@@ -15,8 +15,9 @@ class EmailController extends Controller
         $email_mass=[];
         if(!empty($data_request['data'])){
             $data=json_decode($data_request['data'],true);
-                if($data['token'] == 'f2354a65cc810f0a73a0160a3e25628a' && !empty($data['email']) && !empty($data['data']) && !empty($data['pattern'])){
+                if($data['token'] == 'f2354a65cc810f0a73a0160a3e25628a' && !empty($data['email']) && !empty($data['title']) && !empty($data['data']) && !empty($data['pattern'])){
                     $email_mass['email']=$data['email'];
+                    $email_mass['title']=$data['title'];
                     $email_mass['data']=$data['data'];
                     $email_mass['pattern']=$data['pattern'];
                 }
@@ -27,6 +28,7 @@ class EmailController extends Controller
         $data=[
           'token'=>md5('Avel'),
           'email'=>'nikita@aveldent.ru',
+          'title'=>'Поступление товара',
           'pattern'=>'entrance',//поступление товара
           'data'=>[
               'name'=>'Никита',
@@ -53,6 +55,7 @@ class EmailController extends Controller
         $data= $this->getValEmail($request);
         $pattern=$data['pattern'];
         $email=$data['email'];
+        $title=$data['title'];
         $products=$data['data']['product'];
         $name=$data['data']['name'];
         $html_product='';
@@ -64,7 +67,7 @@ class EmailController extends Controller
         $content = str_replace("|Name|",$name, $view);
         $content = str_replace("|[product]|",$html_product, $content);
 
-        $this->dispatch(new ProcessEmailSend($content));
+        $this->dispatch(new ProcessEmailSend($content,$email,$title));
 
     }
 

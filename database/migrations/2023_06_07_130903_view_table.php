@@ -16,7 +16,7 @@ class ViewTable extends Migration
         Schema::create('view', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('data');
+            $table->longText('data');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

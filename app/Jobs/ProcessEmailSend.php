@@ -15,14 +15,18 @@ class ProcessEmailSend implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $message;
+    protected $email;
+    protected $title;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($message,$email,$title)
     {
         $this->message = $message;
+        $this->email = $email;
+        $this->title = $title;
     }
 
     /**
@@ -34,8 +38,9 @@ class ProcessEmailSend implements ShouldQueue
     {
         $content = $this->message;
         Mail::send('default',['content'=>$content],function ($message){
-            $message->to('nikita@aveldent.ru','to dev block')->subject('test mail');//кому
-            $message->from('nikita@aveldent.ru','to dev block22')->subject('test mail');//от
+            $message->to($this->email,'AvelDent.ru');//кому
+            $message->from('nikita@aveldent.ru','AvelDent.ru');//от
+            $message->subject($this->title);
         });
     }
 }
