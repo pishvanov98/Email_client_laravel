@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHrefHeshTable extends Migration
+class CreateHrefHashTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateHrefHeshTable extends Migration
      */
     public function up()
     {
-        Schema::create('href_hesh', function (Blueprint $table) {
+        Schema::create('href_hash', function (Blueprint $table) {
             $table->id();
             $table->string('href');
             $table->string('hash');
@@ -28,6 +28,6 @@ class CreateHrefHeshTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('href_hesh');
+        Schema::dropIfExists('href_hash');
     }
 }

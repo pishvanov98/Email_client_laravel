@@ -22,7 +22,7 @@
         <tr>
             <th scope="row">{{$val->id}}</th>
             <td>{{$val->name}}</td>
-            <td><a href="#">Изменить</a></td>
+            <td><a href="{{route('admin.view_edit',$val->id)}}">Изменить</a></td>
         </tr>
     @endforeach
 

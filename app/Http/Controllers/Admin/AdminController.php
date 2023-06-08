@@ -22,7 +22,7 @@ class AdminController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'exampleInputNameView' => 'required|max:191',
+            'exampleInputNameView' => 'required',
             'exampleInputNameStatus' => 'required',
             'exampleInputNameContent' => 'required'
         ]);
@@ -43,6 +43,36 @@ class AdminController extends Controller
 
         return redirect('admin/');
 
+    }
+
+    public function edit(Request $request){
+        $id= $request->route('id');
+        $view=View::findOrFail($id);
+        return view('admin.update_view',compact('view'));
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'exampleInputNameView' => 'required',
+            'exampleInputNameStatus' => 'required',
+            'exampleInputNameContent' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('admin/view/'.$request->route('id').'/update')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $data=$request->all();
+
+        $view= View::findOrFail($request->route('id'));
+        $view->name=$data['exampleInputNameView'];
+        $view->data=$data['exampleInputNameContent'];
+        $view->status=$data['exampleInputNameStatus'];
+        $view->update();
+        return redirect('/admin');
     }
 
 }
