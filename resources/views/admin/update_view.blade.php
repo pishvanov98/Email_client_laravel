@@ -45,7 +45,7 @@
 
             $('#exampleInputNameContent').summernote({
                 lang: 'ru-RU',
-                height: 200
+                height: 500
             });
 
         });
