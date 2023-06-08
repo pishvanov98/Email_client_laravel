@@ -27,33 +27,42 @@ class EmailController extends Controller
         $data=[
           'token'=>md5('Avel'),
           'email'=>'nikita@aveldent.ru',
-          'pattern'=>'default',
+          'pattern'=>'entrance',//поступление товара
           'data'=>[
               'name'=>'Никита',
               'product'=>[
-                  ['id'=>'111',
-                  'name'=>'Наименование товара',
-                  'img'=>'https://aveldent.ru/image/cache/258/import-files-be-be4bf215-0058-11ee-80f1-0cc47aab4f67-c4c098b2-0058-11ee-80f1-0cc47aab4f67.png-258x258.png',
+                  ['id'=>'15827',
+                  'name'=>'Таблетки для очистки съемных ортодонтических конструкций PRESIDENT PROFI ORTHO шипучие (30 шт)',
+                  'img'=>'https://aveldent.ru/image/cache/460/import-files-be-be4bf215-0058-11ee-80f1-0cc47aab4f67-c4c098b2-0058-11ee-80f1-0cc47aab4f67.png-460x460.png',
                   'price'=>'1200',
-                  'discount_price'=>'1000'],
+                  'href'=>'https://aveldent.ru/apteka/uhod-za-polostu-rta/tabletki-dlya-ochistki-semnih-ortodonticheskih-konstruktsij-president-profi-ortho-shipuchie-30-sht'
+                  ],
                   [
-                      'id'=>'122',
-                      'name'=>'Наименование товара',
-                      'img'=>'https://aveldent.ru/image/cache/258/import-files-be-be4bf215-0058-11ee-80f1-0cc47aab4f67-c4c098b2-0058-11ee-80f1-0cc47aab4f67.png-258x258.png',
+                      'id'=>'15824',
+                      'name'=>'Прайм Бонд UNIVERSAL mini refil (2,5 мл) Адгезив универсальный, Dentsply',
+                      'img'=>'https://aveldent.ru/image/cache/460/import-files-f0-f0e013ec-ff89-11ed-80f1-0cc47aab4f67-f0e01413-ff89-11ed-80f1-0cc47aab4f67.png-460x460.png',
                       'price'=>'1400',
-                      'discount_price'=>'1000']
+                      'href'=>'https://aveldent.ru/stomatologicheskie-materiali/adgezivnie-materialy/adgezivi/prajm-bond-universal-mini-refil-2-5-ml-adgeziv-universalnij-dentsply'
+                  ]
               ]
         ]];
        return redirect('/send?data='.json_encode($data,true));
     }
 
     public function sendEmail(Request $request){
-       $data= $this->getValEmail($request);
-var_dump($data);
-        exit();
-        $name= 'Никсон';//переменная из очереди писем таблицы
-        $view= View::all()->where('name','=','default')->toArray();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
-        $content = str_replace("|Name|",$name, $view[0]['data']);
+        $data= $this->getValEmail($request);
+        $pattern=$data['pattern'];
+        $email=$data['email'];
+        $products=$data['data']['product'];
+        $name=$data['data']['name'];
+        $html_product='';
+        foreach ($products as $product){
+            $html_product=$html_product.'<a href="'.$product['href'].'"><img src="'.$product['img'].'"><p>'.$product['name'].'</p><span>'.$product['price'].'</span></a>';
+        }
+        $view= View::all()->where('name','=',$pattern)->toArray();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
+        $view=$view[0]['data'];
+        $content = str_replace("|Name|",$name, $view);
+        $content = str_replace("|[product]|",$html_product, $content);
 
         $this->dispatch(new ProcessEmailSend($content));
 
