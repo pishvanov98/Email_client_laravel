@@ -22,7 +22,16 @@
         <tr>
             <th scope="row">{{$val->id}}</th>
             <td>{{$val->name}}</td>
-            <td><a href="{{route('admin.view_edit',$val->id)}}">Изменить</a></td>
+            <td>
+                <div class="wrapper_flex_button">
+                    <a href="{{route('admin.view_edit',$val->id)}}">Изменить</a>
+                    <form action="{{route('admin.view_destroy',$val->id)}}" method="post">
+                        @csrf
+                        @method('delete')
+                        <button  type="submit" >Удалить</button>
+                    </form>
+                </div>
+            </td>
         </tr>
     @endforeach
 

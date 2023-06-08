@@ -11,3 +11,13 @@
     display: flex;
     justify-content: end;
 }
+table .wrapper_flex_button{
+    display: flex;
+    justify-content: space-between;
+    button{
+        border: none;
+        background: no-repeat;
+        text-decoration: underline;
+        color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    }
+}

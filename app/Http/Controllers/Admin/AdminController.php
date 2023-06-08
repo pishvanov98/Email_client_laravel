@@ -75,4 +75,10 @@ class AdminController extends Controller
         return redirect('/admin');
     }
 
+    public function destroy(Request $request){
+        $view=View::findOrFail($request->route('id'));
+        $view->delete();
+        return redirect('/admin');
+    }
+
 }

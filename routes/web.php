@@ -16,6 +16,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['role:admin'], 'prefix'=>
     Route::get('/view/create', 'AdminController@create')->name('admin.view_create');
     Route::get('/view/{id}/edit', 'AdminController@edit')->name('admin.view_edit');
     Route::put('/view/{id}', 'AdminController@update')->name('admin.view_update');
+    Route::delete('/view/{id}','AdminController@destroy')->name('admin.view_destroy');
     Route::post('/view','AdminController@store')->name('admin.view_store');
 
 });
