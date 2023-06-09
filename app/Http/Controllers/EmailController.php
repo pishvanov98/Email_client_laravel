@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessEmailSend;
 use App\Models\Email_queue;
+use App\Models\Log;
 use App\Models\View;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -109,7 +110,19 @@ class EmailController extends Controller
     }
 
     public function redirect(Request $request){
-        dd($request);
+        $data=$request->all();
+        if(!empty($data['id']) && !empty($data['data'])){//обработка, запись лога и редирект
+            $Email= Email_queue::findOrFail($data['id']);
+            if($Email){
+                $log=new Log();
+                $log->user_id=$data['id'];
+                $log->hash=$Email->hash;
+                $log->href=$data['data'];
+                $log->save();
+            }
+
+          return  redirect('https://aveldent.ru'.$data['data']);
+        }
     }
 
 
