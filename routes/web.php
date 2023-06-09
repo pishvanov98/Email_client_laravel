@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test', 'EmailController@test')->name('test');
 Route::get('/send', 'EmailController@sendEmail')->name('send');
-
+Route::get('/redirect', 'EmailController@redirect')->name('redirect');
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -91,17 +91,25 @@ class EmailController extends Controller
         $content = str_replace("|[product]|",$html_product, $content);
 
         $mytime = Carbon::now();
+        $hash_create=hash('md5', $email.$pattern.$mytime);
         $email_queue= new Email_queue();//передаем данные по письму в таблицу
         $email_queue->email=$email;
         $email_queue->pattern=$pattern;
-        $email_queue->hash=hash('md5', $email.$pattern.$mytime);
+        $email_queue->hash=$hash_create;
         $email_queue->status=0;
         $email_queue->transitions_count=0;
         $email_queue->save();
         $id_record=$email_queue->id;
 
+        $content = str_replace("href=\"https://aveldent.ru","href=\"http://127.0.0.1:8000/redirect?id=".$id_record."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
+
         $this->dispatch(new ProcessEmailSend($content,$email,$title,$id_record));
 
+
+    }
+
+    public function redirect(Request $request){
+        dd($request);
     }
 
 
