@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessEmailSend;
 use App\Models\Email_queue;
 use App\Models\View;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
@@ -59,10 +61,10 @@ class EmailController extends Controller
         $title=$data['title'];
         $products=$data['data']['product'];
         $name=$data['data']['name'];
-        $html_product='<table class="2b1204727b46989523cbbfc4b6c8f39brow" style="background:center top;border-collapse:collapse;border-spacing:0;display:block;padding:0px;text-align:left;vertical-align:top;width:100%"><tbody><tr align="left" style="padding:0;text-align:left;vertical-align:top">';
+        $html_product='<table class="2b1204727b46989523cbbfc4b6c8f39brow" style="background:center top;border-collapse:collapse;border-spacing:0;padding:0px;text-align:left;vertical-align:top;width:100%;"><tbody>';
         foreach ($products as $product){
 
-            $html_product .='<td class="375efcce6d4b9c809c07345079e8e4cwrapper a6c32111e79bc6a63b443fc4136407b1first" align="left" valign="top" style="border-collapse:collapse !important;color:#605d5f;sans-serif;font-size:18px;font-weight:normal;margin:0;padding:0px;text-align:left;vertical-align:top;word-break:break-word">';
+            $html_product .='<tr align="left" style="padding:0;text-align:left;vertical-align:top;"><td class="375efcce6d4b9c809c07345079e8e4cwrapper a6c32111e79bc6a63b443fc4136407b1first" align="left" valign="top" style="border-collapse:collapse !important;color:#605d5f;sans-serif;font-size:18px;font-weight:normal;margin:0;padding:0px;text-align:left;vertical-align:top;word-break:break-word">';
             $html_product .='<table class="d799f0b8852cefa66c0002ab833759fsix c811caeafd0ee479775e15c67896ff48columns" style="border-collapse:collapse;border-spacing:0;margin:0 auto 0 auto;padding:0;text-align:left;vertical-align:top;width:290px"><tbody><tr align="left" style="padding:0;text-align:left;vertical-align:top"><td align="left" valign="top" style="border-collapse:collapse !important;color:#605d5f;font-size:18px;font-weight:normal;margin:0;padding:0px;text-align:left;vertical-align:top;width:100%;word-break:break-word">';
             $html_product .='<table align="left" style="border:0;border-collapse:collapse;border-spacing:0;overflow:hidden;padding:0;text-align:left;vertical-align:top;width:100%"><tbody><tr align="left" style="padding:0;text-align:left;vertical-align:top"><td align="left" valign="top" style="border-collapse:collapse !important;color:#605d5f;font-size:18px;font-weight:normal;margin:0;padding:0px;text-align:left;vertical-align:top;width:100%;word-break:break-word">';
             $html_product .='<a href="'.$product['href'].'" rel="noopener noreferrer" target="_blank" style="color:#605d5f;text-decoration:none" data-link-id="8">';
@@ -79,16 +81,26 @@ class EmailController extends Controller
             $html_product .='<a href="'.$product['href'].'" rel="noopener noreferrer" target="_blank" style="background:#008080 center center;border-radius:0px;color:#ffffff;display:inline-block;font-size:16px !important;font-weight:bold;height:100%;line-height:16px;padding:9px 20px 9px 20px;text-align:center;text-decoration:none;width:auto" data-link-id="9">Купить</a>';
             $html_product .='</td></tr></tbody></table>';
             $html_product .='</td><td class="a5cce8faeed789fc65b723bbec3172d0expander" align="left" valign="top" style="border-collapse:collapse !important;color:#605d5f;font-size:18px;font-weight:normal;margin:0;padding:0;text-align:left;vertical-align:top;visibility:hidden;width:100%;word-break:break-word"></td></tr></tbody></table>';
-            $html_product .='</td>';
+            $html_product .='</td></tr>';
 
         }
-        $html_product .='</tr></tbody></table>';
+        $html_product .='</tbody></table>';
         $view= View::all()->where('name','=',$pattern)->toArray();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
         $view=$view[0]['data'];
         $content = str_replace("|Name|",$name, $view);
         $content = str_replace("|[product]|",$html_product, $content);
 
-        $this->dispatch(new ProcessEmailSend($content,$email,$title));
+        $mytime = Carbon::now();
+        $email_queue= new Email_queue();//передаем данные по письму в таблицу
+        $email_queue->email=$email;
+        $email_queue->pattern=$pattern;
+        $email_queue->hash=hash('md5', $email.$pattern.$mytime);
+        $email_queue->status=0;
+        $email_queue->transitions_count=0;
+        $email_queue->save();
+        $id_record=$email_queue->id;
+
+        $this->dispatch(new ProcessEmailSend($content,$email,$title,$id_record));
 
     }
 

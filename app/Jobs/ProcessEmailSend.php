@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Jobs;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\EmailController;
 use Illuminate\Bus\Queueable;
@@ -17,16 +18,18 @@ class ProcessEmailSend implements ShouldQueue
     protected $message;
     protected $email;
     protected $title;
+    protected $id_record;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message,$email,$title)
+    public function __construct($message,$email,$title,$id_record)
     {
         $this->message = $message;
         $this->email = $email;
         $this->title = $title;
+        $this->id_record = $id_record;
     }
 
     /**
@@ -42,5 +45,10 @@ class ProcessEmailSend implements ShouldQueue
             $message->from('nikita@aveldent.ru','AvelDent.ru');//от
             $message->subject($this->title);
         });
+
+        DB::table('email_queue')
+            ->where('id', '=', $this->id_record)
+            ->update(['status' => '1']);
+
     }
 }

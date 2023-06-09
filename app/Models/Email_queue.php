@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Email_queue extends Model
 {
     protected $table = 'email_queue';
+    protected $guarded = [];
     use HasFactory;
 }
