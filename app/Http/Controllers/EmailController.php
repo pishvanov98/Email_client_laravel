@@ -102,7 +102,7 @@ class EmailController extends Controller
         $email_queue->save();
         $id_record=$email_queue->id;
 
-        $content = str_replace("href=\"https://aveldent.ru","href=\"http://127.0.0.1:8000/redirect?id=".$id_record."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
+        $content = str_replace("href=\"https://aveldent.ru","href=\"http://127.0.0.1:8000/redirect?user=".$hash_create."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
 
         $this->dispatch(new ProcessEmailSend($content,$email,$title,$id_record));
 
@@ -111,12 +111,12 @@ class EmailController extends Controller
 
     public function redirect(Request $request){
         $data=$request->all();
-        if(!empty($data['id']) && !empty($data['data'])){//обработка, запись лога и редирект
-            $Email= Email_queue::findOrFail($data['id']);
+        if(!empty($data['user']) && !empty($data['data'])){//обработка, запись лога и редирект
+            $Email= Email_queue::where('hash',$data['user'])->first();
             if($Email){
                 $log=new Log();
-                $log->user_id=$data['id'];
-                $log->hash=$Email->hash;
+                $log->user_id=$Email->id;
+                $log->hash=$data['user'];
                 $log->href=$data['data'];
                 $log->save();
             }
