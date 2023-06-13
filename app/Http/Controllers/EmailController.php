@@ -8,11 +8,13 @@ use App\Models\Log;
 use App\Models\View;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
 {
+    public $count=0;
     public function getValEmail($request){
         $data_request=$request->all();
         $email_mass=[];
@@ -55,7 +57,9 @@ class EmailController extends Controller
     }
 
 
+
     public function sendEmail(Request $request){
+
         $data= $this->getValEmail($request);
         $pattern=$data['pattern'];
         $email=$data['email'];
@@ -104,7 +108,7 @@ class EmailController extends Controller
 
         $content = str_replace("href=\"https://aveldent.ru","href=\"http://127.0.0.1:8000/redirect?user=".$hash_create."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
 
-        $this->dispatch(new ProcessEmailSend($content,$email,$title,$id_record));
+        ProcessEmailSend::dispatch($content,$email,$title,$id_record)->delay(1);
 
 
     }

@@ -44,6 +44,16 @@ return [
             'timeout' => null,
             'auth_mode' => null,
         ],
+        'smtp2' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME2'),
+            'password' => env('MAIL_PASSWORD2'),
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
 
         'ses' => [
             'transport' => 'ses',
