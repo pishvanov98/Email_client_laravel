@@ -60,6 +60,8 @@ class EmailController extends Controller
 
     public function sendEmail(Request $request){
 
+        //добавить колонку с id отправителем (почтой) добавить таблицу с отправителями и сделать проверку какой отправитель был раньше и отправлять с другого
+
         $data= $this->getValEmail($request);
         $pattern=$data['pattern'];
         $email=$data['email'];
