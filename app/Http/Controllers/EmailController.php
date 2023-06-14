@@ -75,7 +75,7 @@ class EmailController extends Controller
             $view=$view['data'];
 //            $content = str_replace("|Name|",$name, $view);
 //            $content = str_replace("|[product]|",$html_product, $content);
-            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name]);
+            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name,'title'=>$title]);
 
 //ПОЛУЧЕНИЕ ПОСЛЕДНЕЙ ЗАПИСИ ИЗ ТАБЛИЦЫ ВХОДЯЩИХ ПОЧТ
             $mytime = Carbon::now();
