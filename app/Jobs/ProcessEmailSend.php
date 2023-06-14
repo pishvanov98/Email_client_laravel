@@ -20,17 +20,19 @@ class ProcessEmailSend implements ShouldQueue
     protected $email;
     protected $title;
     protected $id_record;
+    protected $sender;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message,$email,$title,$id_record)
+    public function __construct($message,$email,$title,$id_record,$sender)
     {
         $this->message = $message;
         $this->email = $email;
         $this->title = $title;
         $this->id_record = $id_record;
+        $this->sender = $sender;
     }
 
     /**
@@ -42,16 +44,23 @@ class ProcessEmailSend implements ShouldQueue
     {
         $content = $this->message;
 
+        if ($this->sender == 1){
+            Mail::mailer('smtp1')->send('default',['content'=>$content],function ($message){
+                $message->to($this->email,'AvelDent.ru');//кому
+                $message->from('noreply-1@aveldent.ru','AvelDent.ru');//от
+                $message->subject($this->title);
+            });
+        }else{
+            Mail::mailer('smtp2')->send('default',['content'=>$content],function ($message){
+                $message->to($this->email,'AvelDent.ru');//кому
+                $message->from('noreply-2@aveldent.ru','AvelDent.ru');//от
+                $message->subject($this->title);
+            });
+        }
 
-        Mail::mailer('smtp')->send('default',['content'=>$content],function ($message){
-            $message->to($this->email,'AvelDent.ru');//кому
-            $message->from('noreply-1@aveldent.ru','AvelDent.ru');//от
-            $message->subject($this->title);
-        });
 
 
-
-//        Mail::mailer('smtp')->to('example@shouts.dev')->send(new SendTestMail());
+//        Mail::mailer('smtp1')->to('example@shouts.dev')->send(new SendTestMail());
 //        Mail::mailer('smtp2')->to('example@shouts.dev')->send(new SendTestMail());
 
         DB::table('email_queue')

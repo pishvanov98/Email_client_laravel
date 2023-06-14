@@ -18,8 +18,11 @@ class EmailQueueTable extends Migration
             $table->string('email');
             $table->string('pattern');
             $table->string('hash');
-            $table->string('status');
-            $table->string('transitions_count');
+            $table->boolean('pause');
+            $table->integer('status');
+            $table->integer('counter');//нумерация отправления
+            $table->integer('sender');//id отправителя,smtp
+            $table->dateTime('date_send');//дата отправки
             $table->timestamps();
         });
     }
