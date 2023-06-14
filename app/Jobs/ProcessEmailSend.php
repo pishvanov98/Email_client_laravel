@@ -71,23 +71,17 @@ class ProcessEmailSend implements ShouldQueue
 
     public function failed()
     {
-//        Artisan::call('queue:restart');
-//        $path = base_path('.env');
-//        if (file_exists($path)) {
-//            file_put_contents($path, str_replace(
-//                'MAIL_USERNAME='.env('MAIL_USERNAME'), 'MAIL_USERNAME=nikita@aveldent.ru', file_get_contents($path)
-//            ));
-//            file_put_contents($path, str_replace(
-//                'MAIL_PASSWORD='.env('MAIL_PASSWORD'), 'MAIL_PASSWORD=cspduqgbrxbsppwp', file_get_contents($path)
-//            ));
-//        }
-//        Artisan::call('queue:work --tries=1');
-//
-//        Artisan::call('cache:clear');
-//        Artisan::call('config:clear');
-//        Artisan::call('queue:work --tries=3');
-//        Artisan::call('queue:restart');
-//        Artisan::call('queue:work --tries=1');
+        $content = $this->message;
+        Mail::mailer('smtp3')->send('default',['content'=>$content],function ($message){
+            $message->to($this->email,'AvelDent.ru');//кому
+            $message->from('noreply-3@aveldent.ru','AvelDent.ru');//от
+            $message->subject($this->title);
+        });
+
+        DB::table('email_queue')
+            ->where('id', '=', $this->id_record)
+            ->update(['status' => '1']);
+
     }
 
 }
