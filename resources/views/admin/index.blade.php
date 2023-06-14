@@ -12,6 +12,7 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Наименование шаблона</th>
+            <th scope="col">Активный</th>
             <th scope="col">Действие</th>
         </tr>
         </thead>
@@ -22,6 +23,7 @@
         <tr>
             <th scope="row">{{$val->id}}</th>
             <td>{{$val->name}}</td>
+            <td>{{$val->status}}</td>
             <td>
                 <div class="wrapper_flex_button">
                     <a href="{{route('admin.view_edit',$val->id)}}">Изменить</a>

@@ -11,7 +11,7 @@
         </div>
         <div class="mb-3">
         <select name="exampleInputNameStatus" class="form-select" aria-label="Default select example">
-            @if($view->status = 1)
+            @if($view->status == 1)
                 <option selected value="1">Активный</option>
                 <option value="2">Не активный</option>
             @else

@@ -48,6 +48,7 @@ class AdminController extends Controller
     public function edit(Request $request){
         $id= $request->route('id');
         $view=View::findOrFail($id);
+
         return view('admin.update_view',compact('view'));
     }
 

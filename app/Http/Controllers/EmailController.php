@@ -72,7 +72,10 @@ class EmailController extends Controller
             $title=$data['title'];
             $products=$data['data']['product'];
             $name=$data['data']['name'];
-            $view= View::where('name','=',$pattern)->first();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
+            $view= View::where('name','=',$pattern)->where('status','=',1)->first();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
+          if (empty($view['data'])){
+              return;
+          }
             $view=$view['data'];
 //            $content = str_replace("|Name|",$name, $view);
 //            $content = str_replace("|[product]|",$html_product, $content);
