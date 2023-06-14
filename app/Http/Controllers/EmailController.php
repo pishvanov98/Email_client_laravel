@@ -21,7 +21,7 @@ class EmailController extends Controller
         $email_mass=[];
         if(!empty($data_request['data'])){
             $data=json_decode($data_request['data'],true);
-                if($data['token'] == 'f2354a65cc810f0a73a0160a3e25628a' && !empty($data['email']) && !empty($data['title']) && !empty($data['data']) && !empty($data['pattern'])){
+                if($data['token'] == env('TOKEN') && !empty($data['email']) && !empty($data['title']) && !empty($data['data']) && !empty($data['pattern'])){
                     $email_mass['email']=$data['email'];
                     $email_mass['title']=$data['title'];
                     $email_mass['data']=$data['data'];
@@ -31,8 +31,9 @@ class EmailController extends Controller
         return $email_mass;
     }
     public function test(){
+
         $data=[
-          'token'=>md5('Avel'),
+          'token'=>env('TOKEN'),
           'email'=>'nikita@aveldent.ru',
           'title'=>'Поступление товара',
           'pattern'=>'entrance',//поступление товара
