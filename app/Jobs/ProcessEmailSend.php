@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\EmailController;
@@ -11,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\View\Compilers\BladeCompiler;
 
 
 class ProcessEmailSend implements ShouldQueue
@@ -44,6 +46,7 @@ class ProcessEmailSend implements ShouldQueue
     {
         $content = $this->message;
 
+
         if ($this->sender == 1){
             Mail::mailer('smtp1')->send('default',['content'=>$content],function ($message){
                 $message->to($this->email,'AvelDent.ru');//кому
@@ -71,16 +74,16 @@ class ProcessEmailSend implements ShouldQueue
 
     public function failed()
     {
-        $content = $this->message;
-        Mail::mailer('smtp3')->send('default',['content'=>$content],function ($message){
-            $message->to($this->email,'AvelDent.ru');//кому
-            $message->from('noreply-3@aveldent.ru','AvelDent.ru');//от
-            $message->subject($this->title);
-        });
-
-        DB::table('email_queue')
-            ->where('id', '=', $this->id_record)
-            ->update(['status' => '1']);
+//        $content = $this->message;
+//        Mail::mailer('smtp3')->send('default',['content'=>$content],function ($message){
+//            $message->to($this->email,'AvelDent.ru');//кому
+//            $message->from('noreply-3@aveldent.ru','AvelDent.ru');//от
+//            $message->subject($this->title);
+//        });
+//
+//        DB::table('email_queue')
+//            ->where('id', '=', $this->id_record)
+//            ->update(['status' => '1']);
 
     }
 
