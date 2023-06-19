@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessEmailSend;
+use App\Models\Email_disabled;
 use App\Models\Email_queue;
 use App\Models\Log;
 use App\Models\View;
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use Illuminate\View\Compilers\BladeCompiler;
 
 class EmailController extends Controller
@@ -79,7 +82,6 @@ class EmailController extends Controller
             $view=$view['data'];
 //            $content = str_replace("|Name|",$name, $view);
 //            $content = str_replace("|[product]|",$html_product, $content);
-            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name,'title'=>$title]);
 
 //ПОЛУЧЕНИЕ ПОСЛЕДНЕЙ ЗАПИСИ ИЗ ТАБЛИЦЫ ВХОДЯЩИХ ПОЧТ
             $mytime = Carbon::now();
@@ -88,6 +90,9 @@ class EmailController extends Controller
             $date_send=$mytime;
             $pause_sec=1;
             $pause=false;
+            $hash_create=hash('md5', $email.$pattern.$mytime);
+            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name,'title'=>$title,'Email'=>$email,'disabled_href'=>env('APP_URL').'/Email_disabled?data='.$hash_create]);
+
 
             $last_record=DB::table('email_queue')->latest('created_at')->first();
             if(!empty($last_record)){
@@ -117,7 +122,7 @@ class EmailController extends Controller
 
             }
 
-            $hash_create=hash('md5', $email.$pattern.$mytime);
+
             $email_queue= new Email_queue();//передаем данные по письму в таблицу
             $email_queue->email=$email;
             $email_queue->pattern=$pattern;
@@ -130,7 +135,7 @@ class EmailController extends Controller
             $email_queue->save();
             $id_record=$email_queue->id;
 
-            $content = str_replace("href=\"https://aveldent.ru","href=\"http://127.0.0.1:8000/redirect?user=".$hash_create."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
+            $content = str_replace("href=\"https://aveldent.ru","href=\"".env('APP_URL')."/redirect?user=".$hash_create."&data=", $content);//ищем ссылки и заменяем их на путь к нашему почтовому клиенту для рассчета на что кликнул пользователь и добавляем id для идентификации пользователя
 
             ProcessEmailSend::dispatch($content,$email,$title,$id_record,$sender)->delay($pause_sec);
 
@@ -152,6 +157,25 @@ class EmailController extends Controller
           return  redirect('https://aveldent.ru'.$data['data']);
         }
     }
+
+    public function disabledEmail(Request $request){
+
+        $data=$request->all();
+
+        if ($data['data']){
+            $email=Email_queue::where('hash','=',$data['data'])->first();
+            if($email){
+                if(Email_disabled::where('email','=',$email->email)->first()){
+                    return view('disabledEmail',['data'=>'Вы уже отписались от всех наших email-рассылок']);
+                }
+                $email_disabled= new Email_disabled();
+                $email_disabled->email=$email->email;
+                $email_disabled->save();
+                return view('disabledEmail',['data'=>'Вы отписались от всех наших email-рассылок']);
+            }
+        }
+    }
+
 
 
 
