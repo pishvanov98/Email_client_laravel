@@ -11997,3 +11997,16 @@ table .wrapper_flex_button button {
   text-decoration: underline;
   color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
 }
+
+
+/* Gallery */
+.gallery{
+    margin:10px 0;
+}
+.gallery img{
+    margin:5px; /* внешние отступы картинок */
+    border:3px solid #fff; /* рамка картинок */
+}
+a.photo:hover img{
+    border:3px solid #034F80; /* изменение цвета рамки при наведении на картинку */
+}
