@@ -2,14 +2,14 @@ version: '3'
 services:
     #PHP Service
     app:
-        image: devilbox/php-fpm:8.0-work
+        image: devilbox/php-fpm:7.4-work
         container_name: app
         restart: unless-stopped
         tty: true
         environment:
             SERVICE_NAME: app
             SERVICE_TAGS: dev
-            FORWARD_PORTS_TO_LOCALHOST: 3306:0.0.0.0:3306
+    #        FORWARD_PORTS_TO_LOCALHOST: 3306:0.0.0.0:3306
         working_dir: /var/www
         volumes:
             - ./:/var/www

@@ -19,5 +19,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['role:admin'], 'prefix'=>
     Route::put('/view/{id}', 'AdminController@update')->name('admin.view_update');
     Route::delete('/view/{id}','AdminController@destroy')->name('admin.view_destroy');
     Route::post('/view','AdminController@store')->name('admin.view_store');
+    Route::get('/downloadImage','ImageController@index')->name('admin.image');
+    Route::post('/downloadImage','ImageController@store')->name('admin.image.store');
+
 
 });

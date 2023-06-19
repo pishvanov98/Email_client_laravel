@@ -3,6 +3,7 @@
 @section('content')
 
     <div class="container flex_wrapper_admin">
+        <a class="btn btn-primary " href="{{route('admin.image')}}" role="button">Загрузка картинок</a>
         <a class="btn btn-primary " href="{{route('admin.view_create')}}" role="button">Добавить шаблон</a>
     </div>
 
