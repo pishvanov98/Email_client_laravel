@@ -42,6 +42,7 @@ class EmailController extends Controller
           'pattern'=>'entrance',//поступление товара
           'data'=>[
               'name'=>'Никита',
+              'add_value'=>'',
               'product'=>[
                   ['id'=>'15827',
                   'name'=>'Таблетки для очистки съемных ортодонтических конструкций PRESIDENT PROFI ORTHO шипучие (30 шт)',
@@ -75,6 +76,7 @@ class EmailController extends Controller
             $title=$data['title'];
             $products=$data['data']['product'];
             $name=$data['data']['name'];
+            $add_value=$data['data']['add_value'];
             $view= View::where('name','=',$pattern)->where('status','=',1)->first();//берем данные шаблона и ищем в нем переменные разделенные | и заменяем на настоящие переменные и передаем в шаблон
           if (empty($view['data'])){
               return;
@@ -91,7 +93,7 @@ class EmailController extends Controller
             $pause_sec=1;
             $pause=false;
             $hash_create=hash('md5', $email.$pattern.$mytime);
-            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name,'title'=>$title,'Email'=>$email,'disabled_href'=>env('APP_URL').'/Email_disabled?data='.$hash_create]);
+            $content=BladeCompiler::render($view,['products'=>$products,'Name'=>$name,'add_value'=>$add_value,'title'=>$title,'Email'=>$email,'disabled_href'=>env('APP_URL').'/Email_disabled?data='.$hash_create]);
 
 
             $last_record=DB::table('email_queue')->latest('created_at')->first();
