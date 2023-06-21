@@ -21,6 +21,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['role:admin'], 'prefix'=>
     Route::post('/view','AdminController@store')->name('admin.view_store');
     Route::get('/downloadImage','ImageController@index')->name('admin.image');
     Route::post('/downloadImage','ImageController@store')->name('admin.image.store');
-
+    Route::get('/request', 'RequestController@index')->name('admin.request');
 
 });

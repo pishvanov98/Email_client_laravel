@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Models\View;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,7 +13,19 @@ class AdminController extends Controller
 
         $view= View::all();
 
-        return view('admin.index',compact('view'));
+        $mass_count_sender=[];
+        $count_sender  = DB::table('email_queue')
+            ->select('pattern', DB::raw('count(*) as total'))
+            ->groupBy('pattern')
+            ->get()->toArray();
+
+
+        foreach ($count_sender as $item){
+            $mass_count_sender[$item->pattern]=$item->total;
+        }
+
+        return view('admin.index',compact('view','mass_count_sender'));
+
     }
 
     public function create(){
